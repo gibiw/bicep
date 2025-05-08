@@ -1,0 +1,24 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "hostPoolName": {
+            "value": "avd-hostpool-demo"
+        },
+        "workspaceName": {
+            "value": "avd-workspace-demo"
+        },
+        "appGroupName": {
+            "value": "avd-appgroup-demo"
+        },
+        "adminUsername": {
+            "value": "adminuser"
+        },
+        "adminPassword": {
+            "value": "P@ssw0rd1234!"
+        },
+        "vmCount": {
+            "value": 2
+        }
+    }
+}
