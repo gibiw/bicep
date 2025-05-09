@@ -13,21 +13,13 @@ param adminUsername string
 param adminPassword string
 param vmCount int = 1
 
-module avdResourceGroup 'modules/resourceGroup/resourceGroup.bicep' = {
-  name: 'resourceGroupDeployment'
-  params: {
-    resourceGroupName: resourceGroupName
-    location: location
-  }
-}
-
 // TODO: create this vnet only for testing. In future, it should be specified in the parameters file
 module virtualNetwork 'modules/virtualNetwork/virtualNetwork.bicep' = {
   scope: resourceGroup(resourceGroupName)
   name: 'virtualNetworkDeployment'
   params: {
     vnetName: vnetName
-    location: avdResourceGroup.outputs.resourceGroupLocation
+    location: location
     addressPrefix: addressPrefix
     subnets: subnets
   }
@@ -40,21 +32,23 @@ module hostPool 'modules/hostPool/hostPool.bicep' = {
     hostPoolName: hostPoolName
     workspaceName: workspaceName
     appGroupName: appGroupName
-    location: avdResourceGroup.outputs.resourceGroupLocation
+    location: location
   }
 }
 
-module hostPoolVm 'modules/hostPool/hostPoolVms.bicep' = [for i in range(0, length(subnets)): {
-  scope: resourceGroup(resourceGroupName)
-  name: 'hostPoolVmDeployment-${i}'
-  params: {
-    vmName: '${hostPoolName}-vm-${i}'
-    location: avdResourceGroup.outputs.resourceGroupLocation
-    subnetId: virtualNetwork.outputs.subnetIds[i]
-    hostPoolId: hostPool.outputs.hostPoolId
-    avdRegistrationToken: hostPool.outputs.hostPoolToken
-    adminPassword: adminUsername
-    adminUsername: adminPassword
-    vmCount: vmCount
+module hostPoolVm 'modules/hostPool/hostPoolVms.bicep' = [
+  for i in range(0, length(subnets)): {
+    scope: resourceGroup(resourceGroupName)
+    name: 'hostPoolVmDeployment-${i}'
+    params: {
+      vmName: '${hostPoolName}-vm-${i}'
+      location: location
+      subnetId: virtualNetwork.outputs.subnetIds[0]
+      hostPoolId: hostPool.outputs.hostPoolId
+      avdRegistrationToken: hostPool.outputs.hostPoolToken
+      adminPassword: adminUsername
+      adminUsername: adminPassword
+      vmCount: vmCount
+    }
   }
-}]
+]

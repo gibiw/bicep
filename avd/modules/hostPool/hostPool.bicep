@@ -24,6 +24,8 @@ param appGroupName string
 @description('Location of the resources.')
 param location string
 
+param token string = newGuid()
+
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-11-01-preview' = {
   name: hostPoolName
   location: location
@@ -31,6 +33,10 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-11-01-preview'
     hostPoolType: hostpoolType
     loadBalancerType: loadBalancerType
     preferredAppGroupType: 'Desktop'
+    registrationInfo: {
+      token: token
+      registrationTokenOperation: 'Update'
+    }
   }
 }
 
