@@ -62,4 +62,4 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-11-01-previe
 
 output hostPoolId string = hostPool.id
 output hostPoolName string = hostPool.name
-output hostPoolToken string = hostPool.properties.registrationInfo.token
+output hostPoolToken string = token
