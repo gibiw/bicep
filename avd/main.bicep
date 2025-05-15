@@ -74,3 +74,24 @@ module applicationGroup 'modules/hostPool/applicationGroups.bicep' = {
     hostPoolId: hostPool.outputs.hostPoolId
   }
 }
+
+module hostPoolVms 'modules/hostPool/hostPoolVms.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  name: 'hostPoolVmsDeployment'
+  params: {
+    vmName: 'avdvm'
+    vmCount: 2
+    location: location
+    subnetId: virtualNetwork.outputs.subnetIds[0]
+    hostPoolName: hostPool.outputs.name
+    avdRegistrationToken: hostPool.outputs.token
+    adminUsername: 'adminuser'
+    adminPassword: 'P@ssw0rd1234!'
+    vmSize: 'Standard_D2s_v5'
+    osDiskSizeGB: 128
+    imagePublisher: 'MicrosoftWindowsDesktop'
+    imageOffer: 'windows-11'
+    imageSku: 'win11-22h2-ent'
+    imageVersion: 'latest'
+  }
+}

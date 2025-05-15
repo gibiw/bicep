@@ -4,7 +4,7 @@ param vmName string
 param vmCount int
 param location string
 param subnetId string
-param hostPoolId string
+param hostPoolName string
 param avdRegistrationToken string
 param adminUsername string
 @secure()
@@ -84,13 +84,17 @@ resource avdExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' 
     location: location
     parent: vm[i]
     properties: {
-      publisher: 'Microsoft.Azure.VirtualDesktop'
-      type: 'AVDAgent'
-      typeHandlerVersion: '1.0'
+      publisher: 'Microsoft.Powershell'
+      type: 'DSC'
+      typeHandlerVersion: '2.73'
       autoUpgradeMinorVersion: true
       settings: {
-        hostPoolId: hostPoolId
-        registrationToken: avdRegistrationToken
+        modulesUrl: 'https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip'
+        configurationFunction: 'Configuration.ps1\\AddSessionHost'
+        properties: {
+          hostPoolName: hostPoolName
+          registrationInfoToken: avdRegistrationToken
+        }
       }
     }
   }

@@ -61,6 +61,8 @@ param validationEnvironment bool = false
 @sys.description('Optional. The necessary information for adding more VMs to this Host Pool.')
 param vmTemplate object = {}
 
+param token string = guid('${name}-registration-token', baseTime)
+
 @sys.description('Optional. Host Pool token validity length. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the token will be valid for 8 hours.')
 param tokenValidityLength string = 'PT8H'
 
@@ -210,7 +212,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
     validationEnvironment: validationEnvironment
     registrationInfo: {
       expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
-      token: null
+      token: token
       registrationTokenOperation: 'Update'
     }
     vmTemplate: ((!empty(vmTemplate)) ? null : string(vmTemplate))
@@ -341,6 +343,8 @@ output hostPoolId string = hostPool.id
 
 @sys.description('The location of the host pool.')
 output location string = hostPool.location
+
+output token string = token
 
 @sys.description('The private endpoints of the host pool.')
 output privateEndpoints privateEndpointOutputType[] = [
