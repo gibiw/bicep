@@ -6,11 +6,6 @@ param vnetName string
 param addressPrefix string
 param subnets array
 
-resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
-  name: resourceGroupName
-  location: location
-}
-
 // TODO: create this vnet only for testing. In future, it should be specified in the parameters file
 module virtualNetwork 'modules/virtualNetwork/virtualNetwork.bicep' = {
   scope: resourceGroup(resourceGroupName)
@@ -51,21 +46,31 @@ module hostPool 'modules/hostPool/hostPool.bicep' = {
         id: 'Standard_D2s_v3'
         ram: 8
       }
-      agentUpdate: {
-        type: 'Scheduled'
-        useSessionHostLocalTime: false
-        maintenanceWindowTimeZone: 'Alaskan Standard Time'
-        maintenanceWindows: [
-          {
-            hour: 7
-            dayOfWeek: 'Friday'
-          }
-          {
-            hour: 8
-            dayOfWeek: 'Saturday'
-          }
-        ]
-      }
     }
+    agentUpdate: {
+      type: 'Scheduled'
+      useSessionHostLocalTime: false
+      maintenanceWindowTimeZone: 'Alaskan Standard Time'
+      maintenanceWindows: [
+        {
+          hour: 7
+          dayOfWeek: 'Friday'
+        }
+        {
+          hour: 8
+          dayOfWeek: 'Saturday'
+        }
+      ]
+    }
+  }
+}
+
+module applicationGroup 'modules/hostPool/applicationGroups.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  name: 'applicationGroupDeployment'
+  params: {
+    appGroupName: 'app-group-demo-001'
+    location: location
+    hostPoolId: hostPool.outputs.hostPoolId
   }
 }

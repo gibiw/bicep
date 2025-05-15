@@ -336,6 +336,9 @@ output resourceGroupName string = resourceGroup().name
 @sys.description('The name of the host pool.')
 output name string = hostPool.name
 
+@sys.description('ID of the host pool.')
+output hostPoolId string = last(split(hostPool.id, '/'))
+
 @sys.description('The location of the host pool.')
 output location string = hostPool.location
 
