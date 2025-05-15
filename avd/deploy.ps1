@@ -19,8 +19,6 @@ New-AzResourceGroupDeployment `
   -Name $deploymentName `
   -ResourceGroupName $resourceGroupName `
   -TemplateFile $bicepFile `
-  -TemplateParameterFile "resourceGroup.parameters.json" `
-  -TemplateParameterFile "virtualNetwork.parameters.json" `
-  -TemplateParameterFile "hostPool.parameters.json"
+  -TemplateParameterFile "./parameters/parameters.json" 
 
 Write-Host "Deployment completed."

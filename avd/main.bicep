@@ -5,13 +5,11 @@ param location string
 param vnetName string
 param addressPrefix string
 param subnets array
-param hostPoolName string
-param workspaceName string
-param appGroupName string
-param adminUsername string
-@secure()
-param adminPassword string
-param vmCount int = 1
+
+resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: resourceGroupName
+  location: location
+}
 
 // TODO: create this vnet only for testing. In future, it should be specified in the parameters file
 module virtualNetwork 'modules/virtualNetwork/virtualNetwork.bicep' = {
@@ -27,28 +25,47 @@ module virtualNetwork 'modules/virtualNetwork/virtualNetwork.bicep' = {
 
 module hostPool 'modules/hostPool/hostPool.bicep' = {
   scope: resourceGroup(resourceGroupName)
-  name: 'hostPoolDeployment'
+  name: '${uniqueString(deployment().name, location)}-demo'
   params: {
-    hostPoolName: hostPoolName
-    workspaceName: workspaceName
-    appGroupName: appGroupName
-    location: location
-  }
-}
-
-module hostPoolVm 'modules/hostPool/hostPoolVms.bicep' = [
-  for i in range(0, length(subnets)): {
-    scope: resourceGroup(resourceGroupName)
-    name: 'hostPoolVmDeployment-${i}'
-    params: {
-      vmName: '${hostPoolName}-vm-${i}'
-      location: location
-      subnetId: virtualNetwork.outputs.subnetIds[0]
-      hostPoolId: hostPool.outputs.hostPoolId
-      avdRegistrationToken: hostPool.outputs.hostPoolToken
-      adminPassword: adminUsername
-      adminUsername: adminPassword
-      vmCount: vmCount
+    name: 'hp-demo-001'
+    description: 'My first AVD Host Pool'
+    friendlyName: 'Demo Host Pool'
+    hostPoolType: 'Pooled'
+    publicNetworkAccess: 'Enabled'
+    loadBalancerType: 'BreadthFirst'
+    maxSessionLimit: 99999
+    personalDesktopAssignmentType: 'Automatic'
+    vmTemplate: {
+      customImageId: null
+      domain: 'domainname.onmicrosoft.com'
+      galleryImageOffer: 'windows-11'
+      galleryImagePublisher: 'microsoftwindowsdesktop'
+      galleryImageSKU: 'win11-22h2-ent'
+      imageType: 'Gallery'
+      imageUri: null
+      namePrefix: 'avdv2'
+      osDiskType: 'StandardSSD_LRS'
+      useManagedDisks: true
+      vmSize: {
+        cores: 2
+        id: 'Standard_D2s_v3'
+        ram: 8
+      }
+      agentUpdate: {
+        type: 'Scheduled'
+        useSessionHostLocalTime: false
+        maintenanceWindowTimeZone: 'Alaskan Standard Time'
+        maintenanceWindows: [
+          {
+            hour: 7
+            dayOfWeek: 'Friday'
+          }
+          {
+            hour: 8
+            dayOfWeek: 'Saturday'
+          }
+        ]
+      }
     }
   }
-]
+}
