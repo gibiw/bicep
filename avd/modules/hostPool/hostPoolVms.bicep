@@ -16,6 +16,11 @@ param imageOffer string = 'windows-11'
 param imageSku string = 'win11-22h2-ent'
 param imageVersion string = 'latest'
 
+param domain string = 'contoso.com'
+param domain_join_username string = 'adminuser'
+@secure()
+param domain_join_password string = 'P@ssw0rd1234!'
+
 resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = [
   for i in range(0, vmCount): {
     name: '${vmName}-${i}-nic'
@@ -78,6 +83,28 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = [
   }
 ]
 
+resource domainjoinsessionhosts 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = [
+  for i in range(0, vmCount): {
+    name: '${vm[i].name}/JoinDomain'
+    location: location
+    properties: {
+      publisher: 'Microsoft.Compute'
+      type: 'JsonADDomainExtension'
+      typeHandlerVersion: '1.3'
+      autoUpgradeMinorVersion: true
+      settings: {
+        name: domain
+        user: domain_join_username
+        restart: true
+        options: 3
+      }
+      protectedSettings: {
+        password: domain_join_password
+      }
+    }
+  }
+]
+
 resource avdExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = [
   for i in range(0, vmCount): {
     name: 'AVDAgent'
@@ -99,5 +126,7 @@ resource avdExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' 
     }
   }
 ]
+
+
 
 output vmIds array = [for i in range(0, vmCount): vm[i].id]

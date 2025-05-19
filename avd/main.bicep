@@ -93,5 +93,8 @@ module hostPoolVms 'modules/hostPool/hostPoolVms.bicep' = {
     imageOffer: 'windows-11'
     imageSku: 'win11-22h2-ent'
     imageVersion: 'latest'
+    domain: 'contoso.com'
+    domain_join_username: 'adminuser'
+    domain_join_password: 'P@ssw0rd1234!'
   }
 }
