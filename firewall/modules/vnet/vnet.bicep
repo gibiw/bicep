@@ -19,7 +19,7 @@ param tags object = {}
 var firewallSubnetName = 'AzureFirewallSubnet'
 
 // Create virtual network with Azure Firewall subnet
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-08-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: vnetName
   location: location
   tags: tags
@@ -27,6 +27,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-08-01' = {
     addressSpace: {
       addressPrefixes: [
         vnetAddressPrefix
+      ]
+    }
+    dhcpOptions: {
+      dnsServers: [
+        '10.112.1.11'
+        '10.111.1.11'
       ]
     }
     subnets: [

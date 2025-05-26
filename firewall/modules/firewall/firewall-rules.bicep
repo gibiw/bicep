@@ -16,29 +16,31 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2021-08-01' existing
 // Create Network Rule Collection Group
 resource networkRuleCollection 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2021-08-01' = {
   parent: firewallPolicy
-  name: 'networkRuleCollectionGroup'
+  name: 'DefaultNetworkRuleCollectionGroup'
   properties: {
     priority: 100
     ruleCollections: [
       {
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        name: 'allowedNetworkRules'
-        priority: 100
+        name: 'Net-coll01'
+        priority: 120
         action: {
           type: 'Allow'
         }
         rules: [
           {
             ruleType: 'NetworkRule'
-            name: 'allowDNS'
+            name: 'Out-DNS'
             ipProtocols: [
               'UDP'
+              'TCP'
             ]
             sourceAddresses: [
-              '10.0.0.0/16' // Example: your VNet
+              '*' // Change to specific source address or CIDR if needed
             ]
             destinationAddresses: [
-              '*'
+              '10.112.1.11'
+              '10.111.1.11'
             ]
             destinationPorts: [
               '53'
@@ -46,19 +48,62 @@ resource networkRuleCollection 'Microsoft.Network/firewallPolicies/ruleCollectio
           }
           {
             ruleType: 'NetworkRule'
-            name: 'allowHttp'
+            name: 'In-DNS'
             ipProtocols: [
+              'UDP'
               'TCP'
             ]
             sourceAddresses: [
-              '10.0.0.0/16' // Example: your VNet
+              '10.112.1.11'
+              '10.111.1.11'
             ]
             destinationAddresses: [
-              '*'
+              '*' // Change to specific source address or CIDR if needed
             ]
             destinationPorts: [
-              '80'
-              '443'
+              '53'
+            ]
+          }
+          {
+            ruleType: 'NetworkRule'
+            name: 'Out-NYL-Open'
+            ipProtocols: [
+              'TCP'
+              'UDP'
+              'ICMP'
+              'Any'
+            ]
+            sourceAddresses: [
+              '*' // Change to specific source address or CIDR if needed
+            ]
+            destinationAddresses: [
+              '10.0.0.0/8'
+              '172.16.0.0/12'
+              '192.168.0.0/16'
+            ]
+            destinationPorts: [
+              '*'
+            ]
+          }
+          {
+            ruleType: 'NetworkRule'
+            name: 'In-NYL-Open'
+            ipProtocols: [
+              'TCP'
+              'UDP'
+              'ICMP'
+              'Any'
+            ]
+            sourceAddresses: [
+              '10.0.0.0/8'
+              '172.16.0.0/12'
+              '192.168.0.0/16'
+            ]
+            destinationAddresses: [
+              '*' // Change to specific source address or CIDR if needed
+            ]
+            destinationPorts: [
+              '*'
             ]
           }
         ]
@@ -70,14 +115,14 @@ resource networkRuleCollection 'Microsoft.Network/firewallPolicies/ruleCollectio
 // Create Application Rule Collection Group
 resource applicationRuleCollection 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2021-08-01' = {
   parent: firewallPolicy
-  name: 'applicationRuleCollectionGroup'
+  name: 'DefaultApplicationRuleCollectionGroup'
   properties: {
     priority: 200
     ruleCollections: [
       {
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        name: 'allowedApplicationRules'
-        priority: 200
+        name: 'rc-app-win365-dev-01'
+        priority: 120
         action: {
           type: 'Allow'
         }
@@ -86,7 +131,7 @@ resource applicationRuleCollection 'Microsoft.Network/firewallPolicies/ruleColle
             ruleType: 'ApplicationRule'
             name: 'allowMicrosoft'
             sourceAddresses: [
-              '10.0.0.0/16' // Example: your VNet
+              '*' // Change to specific source address or CIDR if needed
             ]
             protocols: [
               {
@@ -107,7 +152,7 @@ resource applicationRuleCollection 'Microsoft.Network/firewallPolicies/ruleColle
             ruleType: 'ApplicationRule'
             name: 'allowAzure'
             sourceAddresses: [
-              '10.0.0.0/16' // Example: your VNet
+              '*' // Change to specific source address or CIDR if needed
             ]
             protocols: [
               {
@@ -132,35 +177,36 @@ resource applicationRuleCollection 'Microsoft.Network/firewallPolicies/ruleColle
 // Create NAT Rule Collection Group
 resource natRuleCollection 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2021-08-01' = {
   parent: firewallPolicy
-  name: 'natRuleCollectionGroup'
+  name: 'DefaultDnatRuleCollectionGroup'
   properties: {
     priority: 300
     ruleCollections: [
       {
         ruleCollectionType: 'FirewallPolicyNatRuleCollection'
-        name: 'inboundNatRules'
-        priority: 300
+        name: 'rc-dnat-dev-vdi-01'
+        priority: 150
         action: {
           type: 'Dnat'
         }
         rules: [
           {
             ruleType: 'NatRule'
-            name: 'rdpNatRule'
+            name: 'rc-dnat-dev-vdi-allow'
             ipProtocols: [
               'TCP'
+              'UDP'
+              'ICMP'
+              'Any'
             ]
             sourceAddresses: [
               '*'
             ]
             destinationAddresses: [
-              firewall.properties.ipConfigurations[0].properties.publicIPAddress.id
+              '*'
             ]
             destinationPorts: [
-              '3389'
+              '*'
             ]
-            translatedAddress: '10.0.1.4' // Example: internal IP address of server
-            translatedPort: '3389'
           }
         ]
       }

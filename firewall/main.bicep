@@ -8,17 +8,17 @@ param namePrefix string = 'fw'
 
 @description('Tags for all resources')
 param tags object = {
-  environment: 'production'
+  environment: 'dev'
   project: 'firewall-deployment'
 }
 
 // Parameters for virtual network
 @description('Address space for the virtual network')
-param vnetAddressPrefix string = '10.0.0.0/16'
+param vnetAddressPrefix string = '10.145.0.0/24'
 
 // Parameters for Azure Firewall subnet
 @description('Address prefix for Azure Firewall subnet')
-param firewallSubnetPrefix string = '10.0.0.0/24'
+param firewallSubnetPrefix string = '10.145.0.192/26'
 
 // Parameters for Firewall configuration
 @description('Name of the Azure Firewall')
@@ -36,7 +36,7 @@ module networkModule 'modules/vnet/vnet.bicep' = {
   name: 'networkDeployment'
   params: {
     location: location
-    vnetName: '${namePrefix}-vnet'
+    vnetName: 'vnet-hub-eastus-01'
     vnetAddressPrefix: vnetAddressPrefix
     firewallSubnetPrefix: firewallSubnetPrefix
     tags: tags
@@ -48,7 +48,7 @@ module publicIpModule 'modules/publicIp/public-ip.bicep' = {
   name: 'publicIpDeployment'
   params: {
     location: location
-    publicIpName: '${namePrefix}-firewall-pip'
+    publicIpName: 'pipafw-hub-eastus-01'
     publicIpSku: 'Standard'
     publicIpAllocationMethod: 'Static'
     tags: tags

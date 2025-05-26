@@ -2,7 +2,7 @@
 
 # Parameters
 $resourceGroupName = "firewall-rg"
-$location = "westeurope"  # Change to your desired region
+$location = "eastus"  # Change to your desired region
 $deploymentName = "firewall-deployment-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 
 # Create resource group if it doesn't exist
