@@ -174,50 +174,50 @@ resource applicationRuleCollection 'Microsoft.Network/firewallPolicies/ruleColle
   ]
 }
 
-// Create NAT Rule Collection Group
-resource natRuleCollection 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2021-08-01' = {
-  parent: firewallPolicy
-  name: 'DefaultDnatRuleCollectionGroup'
-  properties: {
-    priority: 300
-    ruleCollections: [
-      {
-        ruleCollectionType: 'FirewallPolicyNatRuleCollection'
-        name: 'rc-dnat-dev-vdi-01'
-        priority: 150
-        action: {
-          type: 'Dnat'
-        }
-        rules: [
-          {
-            ruleType: 'NatRule'
-            name: 'rc-dnat-dev-vdi-allow'
-            ipProtocols: [
-              'TCP'
-              'UDP'
-              'ICMP'
-              'Any'
-            ]
-            sourceAddresses: [
-              '*'
-            ]
-            destinationAddresses: [
-              '*'
-            ]
-            destinationPorts: [
-              '*'
-            ]
-          }
-        ]
-      }
-    ]
-  }
-  dependsOn: [
-    applicationRuleCollection // Important: rule collection groups must be created sequentially
-  ]
-}
+// // Create NAT Rule Collection Group
+// resource natRuleCollection 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2021-08-01' = {
+//   parent: firewallPolicy
+//   name: 'DefaultDnatRuleCollectionGroup'
+//   properties: {
+//     priority: 300
+//     ruleCollections: [
+//       {
+//         ruleCollectionType: 'FirewallPolicyNatRuleCollection'
+//         name: 'rc-dnat-dev-vdi-01'
+//         priority: 150
+//         action: {
+//           type: 'Dnat'
+//         }
+//         rules: [
+//           {
+//             ruleType: 'NatRule'
+//             name: 'rc-dnat-dev-vdi-allow'
+//             ipProtocols: [
+//               'TCP'
+//               'UDP'
+//               'ICMP'
+//               'Any'
+//             ]
+//             sourceAddresses: [
+//               '*'
+//             ]
+//             destinationAddresses: [
+//               '*'
+//             ]
+//             destinationPorts: [
+//               '*'
+//             ]
+//           }
+//         ]
+//       }
+//     ]
+//   }
+//   dependsOn: [
+//     applicationRuleCollection // Important: rule collection groups must be created sequentially
+//   ]
+// }
 
 // Output data
 output networkRuleCollectionId string = networkRuleCollection.id
 output applicationRuleCollectionId string = applicationRuleCollection.id
-output natRuleCollectionId string = natRuleCollection.id
+// output natRuleCollectionId string = natRuleCollection.id
