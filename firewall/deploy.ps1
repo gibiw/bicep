@@ -18,7 +18,7 @@ New-AzResourceGroupDeployment `
     -ResourceGroupName $resourceGroupName `
     -TemplateFile "./main.bicep" `
     -location $location `
-    -namePrefix "fw" `
+    -nameSuffix "hub-eastus-01" `
     -Verbose
 
 Write-Host "Deployment completed."

@@ -3,8 +3,8 @@
 @description('Location for all resources')
 param location string = resourceGroup().location
 
-@description('Name prefix for all resources')
-param namePrefix string = 'fw'
+@description('Name suffix for all resources')
+param nameSuffix string = 'hub-eastus-01'
 
 @description('Tags for all resources')
 param tags object = {
@@ -22,7 +22,7 @@ param firewallSubnetPrefix string = '10.145.0.192/26'
 
 // Parameters for Firewall configuration
 @description('Name of the Azure Firewall')
-param firewallName string = '${namePrefix}-firewall'
+param firewallName string = 'afw-${nameSuffix}'
 
 @description('Tier of Azure Firewall (Standard or Premium)')
 @allowed([
@@ -36,7 +36,7 @@ module networkModule 'modules/vnet/vnet.bicep' = {
   name: 'networkDeployment'
   params: {
     location: location
-    vnetName: 'vnet-hub-eastus-01'
+    vnetName: 'vnet-${nameSuffix}'
     vnetAddressPrefix: vnetAddressPrefix
     firewallSubnetPrefix: firewallSubnetPrefix
     tags: tags
@@ -48,7 +48,7 @@ module publicIpModule 'modules/publicIp/public-ip.bicep' = {
   name: 'publicIpDeployment'
   params: {
     location: location
-    publicIpName: 'pipafw-hub-eastus-01'
+    publicIpName: 'pipafw-${nameSuffix}'
     publicIpSku: 'Standard'
     publicIpAllocationMethod: 'Static'
     tags: tags
