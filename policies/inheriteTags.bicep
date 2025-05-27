@@ -34,32 +34,32 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
             {
               operation: 'add'
               field: '[concat(\'tags[\', \'Cost Center\', \']\')]'
-              value: '[resourceGroup().tags["Cost Center"]]'
+              value: '[resourceGroup().tags[\'Cost Center\']]'
             }
             {
               operation: 'add'
               field: '[concat(\'tags[\', \'Environment\', \']\')]'
-              value: '[resourceGroup().tags["Environment"]]'
+              value: '[resourceGroup().tags[\'Environment\']]'
             }
             {
               operation: 'add'
               field: '[concat(\'tags[\', \'Severity\', \']\')]'
-              value: '[resourceGroup().tags["Severity"]]'
+              value: '[resourceGroup().tags[\'Severity\']]'
             }
             {
               operation: 'add'
               field: '[concat(\'tags[\', \'App ID\', \']\')]'
-              value: '[resourceGroup().tags["App ID"]]'
+              value: '[resourceGroup().tags[\'App ID\']]'
             }
             {
               operation: 'add'
               field: '[concat(\'tags[\', \'Application Name\', \']\')]'
-              value: '[resourceGroup().tags["Application Name"]]'
+              value: '[resourceGroup().tags[\'Application Name\']]'
             }
             {
               operation: 'add'
               field: '[concat(\'tags[\', \'App Owner\', \']\')]'
-              value: '[resourceGroup().tags["App Owner"]]'
+              value: '[resourceGroup().tags[\'App Owner\']]'
             }
           ]
         }
