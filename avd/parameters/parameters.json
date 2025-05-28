@@ -26,6 +26,12 @@
                 }
             ]
         },
+        "vnetForPeeringName": {
+            "value": "vnet-hub-eastus-01"
+        },
+        "vnetForPeeringResourceGroup": {
+            "value": "rg-nyl-hub-networking-001"
+        },
         "hostPoolName": {
             "value": "avd-hostpool-demo"
         },

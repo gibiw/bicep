@@ -5,6 +5,8 @@ param location string
 param vnetName string
 param addressPrefix string
 param subnets array
+param vnetForPeeringName string
+param vnetForPeeringResourceGroup string
 
 // TODO: create this vnet only for testing. In future, it should be specified in the parameters file
 module virtualNetwork 'modules/virtualNetwork/virtualNetwork.bicep' = {
@@ -15,6 +17,21 @@ module virtualNetwork 'modules/virtualNetwork/virtualNetwork.bicep' = {
     location: location
     addressPrefix: addressPrefix
     subnets: subnets
+  }
+}
+
+module peeringModule 'modules/virtualNetwork/peering.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  name: 'vnetPeeringDeployment'
+  params: {
+    vnet1Name: virtualNetwork.outputs.name
+    vnet1ResourceGroupName: resourceGroupName
+    vnet2Name: vnetForPeeringName
+    vnet2ResourceGroupName: vnetForPeeringResourceGroup
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    allowGatewayTransit: false
+    useRemoteGateways: false
   }
 }
 
