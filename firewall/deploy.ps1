@@ -1,7 +1,7 @@
 # deploy.ps1 - PowerShell script for deploying Azure Firewall with Bicep
 
 # Parameters
-$resourceGroupName = "rg-nyl-hub-networking-001"
+$resourceGroupName = "rg-avd-network"
 $location = "eastus"  # Change to your desired region
 $deploymentName = "firewall-deployment-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 
