@@ -8,7 +8,7 @@ param nameSuffix string = 'hub-eastus-01'
 
 @description('Tags for all resources')
 param tags object = {
-  environment: 'dev'
+  Environment: 'NonProd'
   project: 'firewall-deployment'
 }
 
