@@ -12,13 +12,11 @@ param tags object = {
   project: 'firewall-deployment'
 }
 
-// Parameters for virtual network
-@description('Address space for the virtual network')
-param vnetAddressPrefix string = '10.145.0.0/24'
+param vnetName string = 'vnet-avd'
 
 // Parameters for Azure Firewall subnet
 @description('Address prefix for Azure Firewall subnet')
-param firewallSubnetPrefix string = '10.145.0.192/26'
+param firewallSubnetPrefix string = '10.247.1.0/26'
 
 // Parameters for Firewall configuration
 @description('Name of the Azure Firewall')
@@ -31,15 +29,13 @@ param firewallName string = 'afw-${nameSuffix}'
 ])
 param firewallTier string = 'Standard'
 
-// Deploy virtual network with subnet
-module networkModule 'modules/vnet/vnet.bicep' = {
-  name: 'networkDeployment'
+// Deploy subnet
+module networkModule 'modules/vnet/subnet.bicep' = {
+  name: 'subnetDeployment'
   params: {
-    location: location
-    vnetName: 'vnet-${nameSuffix}'
-    vnetAddressPrefix: vnetAddressPrefix
-    firewallSubnetPrefix: firewallSubnetPrefix
-    tags: tags
+    vnetName: vnetName
+    subnetName: 'AzureFirewallSubnet'
+    addressPrefix: firewallSubnetPrefix
   }
 }
 
@@ -62,7 +58,7 @@ module firewallModule 'modules/firewall/firewall.bicep' = {
     location: location
     firewallName: firewallName
     firewallTier: firewallTier
-    vnetName: networkModule.outputs.vnetName
+    vnetName: vnetName
     publicIpId: publicIpModule.outputs.publicIpId
     tags: tags
   }
