@@ -13,7 +13,7 @@ param vnetName string = 'vnet-avd'
 
 // Parameters for Azure Firewall subnet
 @description('Address prefix for Azure Firewall subnet')
-param firewallSubnetPrefix string = '10.247.1.0/26'
+param firewallSubnetPrefix string = '10.247.0.191/26'
 
 // Parameters for Firewall configuration
 @description('Name of the Azure Firewall')
