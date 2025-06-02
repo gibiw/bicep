@@ -7,10 +7,7 @@ param location string = resourceGroup().location
 param nameSuffix string = 'hub-eastus-01'
 
 @description('Tags for all resources')
-param tags object = {
-  Environment: 'NonProd'
-  project: 'firewall-deployment'
-}
+param tags object = {}
 
 param vnetName string = 'vnet-avd'
 
