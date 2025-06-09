@@ -28,9 +28,6 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
       }
       then: {
         effect: 'deny'
-        details: {
-          message: 'Resource groups must have a Cost Center tag'
-        }
       }
     }
   }

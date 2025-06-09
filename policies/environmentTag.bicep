@@ -42,9 +42,6 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
       }
       then: {
         effect: 'deny'
-        details: {
-          message: 'Resource groups must have an Environment tag with one of the following values: Development, Test, Staging, Production'
-        }
       }
     }
   }
