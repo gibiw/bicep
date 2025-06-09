@@ -9,35 +9,28 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
     policyType: 'Custom'
     mode: 'Indexed'
     displayName: 'Enforce Tag Policy: Cost Center'
-    description: 'This policy assigns a tag to all resources in the subscription.'
+    description: 'This policy enforces the Cost Center tag on resource groups.'
     metadata: {
       category: 'Tagging'
     }
     policyRule: {
       if: {
-        allOf:[
+        allOf: [
           {
             field: 'type'
             equals: 'Microsoft.Resources/subscriptions/resourceGroups'
           }
           {
-            anyOf: [
-            {
-              field: '[concat(\'tags[\', \'Cost Center\', \']\')]'
-              exists: 'false'
-            }
-            {
-              not: {
-                field: '[concat(\'tags[\', \'Cost Center\', \']\')]'
-                match: '##########'
-              }
-            }
-          ]
-        }
-      ]
+            field: '[concat(\'tags[\', \'Cost Center\', \']\')]'
+            exists: false
+          }
+        ]
       }
       then: {
         effect: 'deny'
+        details: {
+          message: 'Resource groups must have a Cost Center tag'
+        }
       }
     }
   }
@@ -46,11 +39,13 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-05-01' = {
   name: '${policyName}-assignment'
   scope: subscription()
-  identity:{type:'SystemAssigned'}
+  identity: {
+    type: 'SystemAssigned'
+  }
   location: locationValue 
   properties: {
     displayName: 'Cost Center Assignment'
-    description: 'Assigns the tagging policy at the subscription level.'
+    description: 'Enforces the Cost Center tag on resource groups.'
     policyDefinitionId: policyDefinition.id
     enforcementMode: 'Default'
   }

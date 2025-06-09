@@ -9,13 +9,13 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
     policyType: 'Custom'
     mode: 'Indexed'
     displayName: 'Enforce Tag Policy: Severity'
-    description: 'This policy assigns a tag to all resources in the subscription.'
+    description: 'This policy enforces the Severity tag on resource groups with specific allowed values.'
     metadata: {
       category: 'Tagging'
     }
     policyRule: {
       if: {
-        allOf:[
+        allOf: [
           {
             field: 'type'
             equals: 'Microsoft.Resources/subscriptions/resourceGroups'
@@ -24,11 +24,11 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
             anyOf: [
               {
                 field: '[concat(\'tags[\', \'Severity\', \']\')]'
-                exists: 'false'
+                exists: false
               }
               {
                 field: '[concat(\'tags[\', \'Severity\', \']\')]'
-                notIn:[
+                notIn: [
                   'Low'
                   'Medium'
                   'High'
@@ -41,6 +41,9 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
       }
       then: {
         effect: 'deny'
+        details: {
+          message: 'Resource groups must have a Severity tag with one of the following values: Low, Medium, High, Critical'
+        }
       }
     }
   }
@@ -49,11 +52,13 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-05-01' = {
   name: '${policyName}-assignment'
   scope: subscription()
-  identity:{type:'SystemAssigned'}
+  identity: {
+    type: 'SystemAssigned'
+  }
   location: locationValue 
   properties: {
     displayName: 'Severity Assignment'
-    description: 'Assigns the tagging policy at the subscription level.'
+    description: 'Enforces the Severity tag on resource groups with specific allowed values.'
     policyDefinitionId: policyDefinition.id
     enforcementMode: 'Default'
   }
