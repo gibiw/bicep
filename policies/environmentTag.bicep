@@ -7,7 +7,7 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
   name: policyName
   properties: {
     policyType: 'Custom'
-    mode: 'Indexed'
+    mode: 'All'
     displayName: 'Enforce Tag Policy: Environment'
     description: 'This policy enforces the Environment tag on resource groups with specific allowed values.'
     metadata: {

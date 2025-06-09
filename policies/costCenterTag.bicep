@@ -7,7 +7,7 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
   name: policyName
   properties: {
     policyType: 'Custom'
-    mode: 'Indexed'
+    mode: 'All'
     displayName: 'Enforce Tag Policy: Cost Center'
     description: 'This policy enforces the Cost Center tag on resource groups.'
     metadata: {
