@@ -19,7 +19,7 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
         allOf:[
           {
             field: 'type'
-            equals: 'Microsoft.Rersources/subscriptions/resourceGroups'
+            equals: 'Microsoft.Resources/subscriptions/resourceGroups'
           }
           {
             field: '[concat(\'tags[\', \'${tagName}\', \']\')]'
