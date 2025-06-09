@@ -7,7 +7,7 @@ resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2024-05-01'
   name: policyName
   properties: {
     policyType: 'Custom'
-    mode: 'Indexed'
+    mode: 'All'
     displayName: 'Inherit Tags Policy'
     description: 'This policy inherits specific tags from the resource group to resources in the subscription if they are missing.'
     metadata: {
